@@ -1,7 +1,11 @@
-import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
+import 'dart:convert';
 
-import "../services/location.dart";
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
+import "package:clima/services/location.dart";
+import "package:clima/secureContent/secure_data.dart";
+import "package:clima/services/networking.dart";
 
 class LoadingScreen extends StatefulWidget {
   @override
@@ -11,8 +15,13 @@ class LoadingScreen extends StatefulWidget {
 void getLocation() async {
   LocationService location = LocationService();
   await location.getCurrentLocation();
-  print(
-      'Location is latitude:${location.latitude} & longitude:${location.longitude}');
+  String URL =
+      "https://api.openweathermap.org/data/2.5/weather?lat=${location.latitude}&lon=${location.longitude}&appid=$OWM_Key";
+
+  NetworkHelper network = NetworkHelper(URL);
+  dynamic data = await network.getData();
+
+  print(data["name"]);
 }
 
 class _LoadingScreenState extends State<LoadingScreen> {
